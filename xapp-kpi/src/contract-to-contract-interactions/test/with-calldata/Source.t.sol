@@ -17,7 +17,7 @@ contract SourceTestUnit is DSTestPlus {
   Source private source;
   address private target = address(1);
 
-  event UpdateInitiated(address to, uint256 newValue, bool permissioned);
+  event UpdateInitiated(address to, uint256 amount, bool permissioned);
 
   function setUp() public {
     connext = new ConnextHandler();
@@ -34,7 +34,10 @@ contract SourceTestUnit is DSTestPlus {
     address userChainA = address(0xA);
     vm.label(address(userChainA), "userChainA");
 
-    uint256 newValue = 100;
+    address zkSyncAddress =0xDc495507b830E5D1d8C073D4B12D144e76100816;
+    address contractAddr=0xDc495507b830E5D1d8C073D4B12D144e76100816;
+    uint64 ergsLimit = 0;
+    uint256 amount = 0;
     bool permissioned = false;
 
     // Mock the xcall
@@ -43,7 +46,7 @@ contract SourceTestUnit is DSTestPlus {
 
     // Check for an event emitted
     vm.expectEmit(true, true, true, true);
-    emit UpdateInitiated(target, newValue, permissioned);
+    emit UpdateInitiated(target, amount, permissioned);
 
     vm.prank(address(userChainA));
     source.updateValue(
@@ -51,7 +54,10 @@ contract SourceTestUnit is DSTestPlus {
       address(token),
       rinkebyChainId,
       kovanChainId,
-      newValue,
+      zkSyncAddress,
+      contractAddr,
+      ergsLimit,
+      amount,
       permissioned
     );
   }
@@ -87,11 +93,14 @@ contract SourceTestForked is DSTestPlus {
     address userChainA = address(0xA);
     vm.label(address(userChainA), "userChainA");
 
-    uint256 newValue = 100;
+    address zkSyncAddress=0xDc495507b830E5D1d8C073D4B12D144e76100816;
+    address contractAddr=0xDc495507b830E5D1d8C073D4B12D144e76100816;
+    uint64 ergsLimit = 0;
+    uint256 amount = 0;
     bool permissioned = false;
 
     vm.expectEmit(true, true, true, true);
-    emit UpdateInitiated(target, newValue, permissioned);
+    emit UpdateInitiated(target, amount, permissioned);
 
     vm.prank(address(userChainA));
     source.updateValue(
@@ -99,7 +108,10 @@ contract SourceTestForked is DSTestPlus {
       address(token),
       kovanDomainId,
       rinkebyDomainId,
-      newValue,
+      zkSyncAddress,
+      contractAddr,
+      ergsLimit,
+      amount,
       permissioned
     );
   }

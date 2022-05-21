@@ -25,7 +25,10 @@ contract Source {
     address asset,
     uint32 originDomain,
     uint32 destinationDomain,
-    uint256 newValue,
+    address zkSyncAddress,
+    address contractAddr,
+    uint64 ergsLimit,
+    uint256 amount,
     bool permissioned
   ) external payable {
 
@@ -40,7 +43,8 @@ contract Source {
       selector = bytes4(keccak256("updateValueUnpermissioned(uint256)"));
       forceSlow = false;
     }
-    bytes memory callData = abi.encodeWithSelector(selector, newValue);
+
+    bytes memory callData = abi.encodeWithSelector(selector, zkSyncAddress, contractAddr, ergsLimit, amount);
 
     IConnextHandler.CallParams memory callParams = IConnextHandler.CallParams({
       to: to,
@@ -60,6 +64,6 @@ contract Source {
 
     connext.xcall(xcallArgs);
 
-    emit UpdateInitiated(to, newValue, permissioned);
+    emit UpdateInitiated(to, amount, permissioned);
   }
 }
