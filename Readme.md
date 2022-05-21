@@ -1,5 +1,7 @@
 ## zkTribe - create mini guild's tribes backed by success tokens - hack.money submission 2022
 ![](assets/zkMarket.png)
+
+
 Every project needs its tribe, zkTribe creation backed by collateral on L1, allows a project to create success tokens on L1 for a fixed period of time. During this period, investors can buy success tokens from the project and then convert them to a NFT tribe on zkSync. A tribe then has to choose when they want to foreclose their options contract and take profit as a group.
 
 #### Status
