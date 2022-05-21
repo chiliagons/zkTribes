@@ -1,0 +1,56 @@
+{
+  "name": "@connext/nxtp-adapters-subgraph",
+  "version": "0.2.0-alpha.16",
+  "description": "adapter for subgraph interaction of nxtp protocol",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "dev": "",
+    "start": "",
+    "lint": "eslint ./src --ext .ts --env node",
+    "test": "",
+    "dev-test": "ts-node --transpileOnly ./script/sample.ts",
+    "clean": "rimraf ./dist ./tsconfig.tsBuildInfo",
+    "build": "tsc --build ./tsconfig.build.json",
+    "build-client": "graphclient build --tsOnly",
+    "verify": "yarn test && yarn clean && yarn build && yarn lint --max-warnings 0",
+    "purge": "yarn clean && rimraf ./coverage ./node_modules",
+    "tsp": "yarn run tsp:root \"$@\" --cwd $(pwd)",
+    "graphiql": "graphclient serve-dev"
+  },
+  "nodemonConfig": {
+    "exec": "node --enable-source-maps ./dist/index.js | pino-pretty",
+    "delay": "500",
+    "ext": "js,json",
+    "watch": [
+      ".env",
+      "./dist"
+    ]
+  },
+  "author": "Connext",
+  "license": "ISC",
+  "dependencies": {
+    "@connext/nxtp-utils": "workspace:*",
+    "@graphprotocol/client-cli": "0.0.7",
+    "@graphql-mesh/transform-prefix": "0.11.40",
+    "@graphql-mesh/transform-rename": "0.12.39",
+    "@graphql-mesh/transform-type-merging": "0.3.48",
+    "@sinclair/typebox": "^0.23.4",
+    "@typescript-eslint/eslint-plugin": "^5.16.0",
+    "ethers": "^5.6.1",
+    "graphql": "16.3.0",
+    "graphql-request": "^4.2.0",
+    "graphql-tag": "^2.12.6"
+  },
+  "devDependencies": {
+    "eslint": "^8.11.0",
+    "ts-node": "^10.7.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.6.2"
+  },
+  "gitHead": "937a7cde93e6ac1e151c6374f48adf83d3fa4ec6",
+  "stableVersion": ""
+}

@@ -1,0 +1,121 @@
+type Asset @entity {
+  id: ID!
+  local: Bytes!
+  adoptedAsset: Bytes!
+  canonicalId: Bytes!
+  canonicalDomain: BigInt!
+  blockNumber: BigInt! # needed in case multiple locals are stored under the same canonicalId
+}
+
+type AssetBalance @entity {
+  id: ID!
+  amount: BigInt!
+  router: Router!
+  asset: Asset!
+}
+
+# Router represents a router and its associated liquidity
+type Router @entity {
+  id: ID!
+  isActive: Boolean!
+  owner: Bytes
+  recipient: Bytes
+  proposedOwner: Bytes
+  proposedTimestamp: BigInt
+  assetBalances: [AssetBalance!]! @derivedFrom(field: "router")
+}
+
+enum TransferStatus {
+  XCalled
+  Executed
+  Reconciled
+  Completed
+}
+
+type OriginTransfer @entity {
+  id: ID!
+
+  # Meta
+  chainId: BigInt
+  transferId: Bytes
+  nonce: BigInt
+
+  # CallParams
+  to: Bytes
+  callData: Bytes
+  originDomain: BigInt
+  destinationDomain: BigInt
+  forceSlow: Boolean
+  receiveLocal: Boolean
+
+  # Event Data
+  status: TransferStatus
+  relayerFee: BigInt
+  message: Bytes
+
+  # Asset
+  # The asset that gets sent in.
+  transactingAsset: Bytes
+  # Amount of asset sent in.
+  transactingAmount: BigInt
+  # Nomad asset being bridged.
+  bridgedAsset: Bytes
+  # Amount of bridged nomad asset.
+  bridgedAmount: BigInt
+
+  # XCalled Transaction
+  caller: Bytes
+  transactionHash: Bytes
+  timestamp: BigInt
+  gasPrice: BigInt
+  gasLimit: BigInt
+  blockNumber: BigInt
+}
+
+type DestinationTransfer @entity {
+  id: ID!
+
+  # Meta
+  chainId: BigInt
+  transferId: Bytes
+  nonce: BigInt
+
+  # CallParams
+  to: Bytes
+  callData: Bytes
+  originDomain: BigInt
+  destinationDomain: BigInt
+  forceSlow: Boolean
+  receiveLocal: Boolean
+
+  # Event Data
+  status: TransferStatus
+  routers: [Router!]
+  originSender: Bytes
+
+  # Asset
+  # The asset that gets delivered.
+  transactingAsset: Bytes
+  # Amount of delivered asset.
+  transactingAmount: BigInt
+  # The local version of the bridged asset.
+  localAsset: Bytes
+  # The amount of the local asset.
+  localAmount: BigInt
+
+  # Executed Transaction
+  executedCaller: Bytes
+  executedTransactionHash: Bytes
+  executedTimestamp: BigInt
+  executedGasPrice: BigInt
+  executedGasLimit: BigInt
+  executedBlockNumber: BigInt
+
+  # Reconciled Transaction
+  reconciledCaller: Bytes
+  reconciledTransactionHash: Bytes
+  reconciledTimestamp: BigInt
+  reconciledGasPrice: BigInt
+  reconciledGasLimit: BigInt
+  reconciledBlockNumber: BigInt
+}
