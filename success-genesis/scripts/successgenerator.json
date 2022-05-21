@@ -1,0 +1,30 @@
+[
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "zkSyncAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "contractAddr",
+          "type": "address"
+        },
+        {
+          "internalType": "uint64",
+          "name": "ergsLimit",
+          "type": "uint64"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "callZkSync",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ]
