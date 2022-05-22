@@ -53,7 +53,7 @@ async function main() {
         SUCCESSNFT_ADDRESS, 
         // data,
         ergsLimit,
-        "Link Marines",
+        "MoloooCH",
         {
             // Passing the necessary ETH `value` to cover the fee for the operation
             value: baseCost,
