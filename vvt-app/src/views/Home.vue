@@ -25,7 +25,15 @@
     </div>
     <div v-else>
 <button class="inline-flex 
-items-center justify-center rounded-md border border-transparent bg-indigo-600 px-5 py-3 text-base font-medium leading-6 text-white transition duration-150 ease-in-out hover:bg-indigo-500 focus:outline-none" v-on:click="connectMetamask">Connect Metamask</button>
+items-center justify-center rounded-md border border-transparent bg-indigo-600 px-5 py-3 text-base font-medium leading-6 
+text-white transition duration-150 ease-in-out hover:bg-indigo-500 focus:outline-none" v-on:click="connectMetamask">
+Connect Metamask
+</button>
+       <router-link
+            to="/launch"
+            class="inline-flex items-center justify-center rounded-md border border-transparent ml-10 bg-red-600 px-5 py-3 text-base font-medium leading-6 text-white transition duration-150 ease-in-out hover:bg-red-500 focus:outline-none"
+            >Launch Your Tribe</router-link
+          >
   </div>
   </div>
   </div>
