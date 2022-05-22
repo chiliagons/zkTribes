@@ -774,7 +774,7 @@ export default {
         this.currentBalance = await this.getBalance();
         this.currentFee = await this.getFee();
       } catch (e) {
-        alert(JSON.stringify(e));
+        console.log(JSON.stringify(e));
       }
 
       this.txStatus = 0;
