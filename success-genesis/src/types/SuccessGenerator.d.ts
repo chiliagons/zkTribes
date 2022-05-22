@@ -21,18 +21,24 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface SuccessGeneratorInterface extends ethers.utils.Interface {
   functions: {
-    "callZkSync(address,address,uint64,uint256)": FunctionFragment;
+    "callZkSync(address,address,uint64,string)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "callZkSync",
-    values: [string, string, BigNumberish, BigNumberish]
+    values: [string, string, BigNumberish, string]
   ): string;
 
   decodeFunctionResult(functionFragment: "callZkSync", data: BytesLike): Result;
 
-  events: {};
+  events: {
+    "TribeCreated(string)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "TribeCreated"): EventFragment;
 }
+
+export type TribeCreatedEvent = TypedEvent<[string] & { arg0: string }>;
 
 export class SuccessGenerator extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -82,7 +88,7 @@ export class SuccessGenerator extends BaseContract {
       zkSyncAddress: string,
       contractAddr: string,
       ergsLimit: BigNumberish,
-      amount: BigNumberish,
+      tribeName: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -91,7 +97,7 @@ export class SuccessGenerator extends BaseContract {
     zkSyncAddress: string,
     contractAddr: string,
     ergsLimit: BigNumberish,
-    amount: BigNumberish,
+    tribeName: string,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -100,19 +106,27 @@ export class SuccessGenerator extends BaseContract {
       zkSyncAddress: string,
       contractAddr: string,
       ergsLimit: BigNumberish,
-      amount: BigNumberish,
+      tribeName: string,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    "TribeCreated(string)"(
+      undefined?: null
+    ): TypedEventFilter<[string], { arg0: string }>;
+
+    TribeCreated(
+      undefined?: null
+    ): TypedEventFilter<[string], { arg0: string }>;
+  };
 
   estimateGas: {
     callZkSync(
       zkSyncAddress: string,
       contractAddr: string,
       ergsLimit: BigNumberish,
-      amount: BigNumberish,
+      tribeName: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -122,7 +136,7 @@ export class SuccessGenerator extends BaseContract {
       zkSyncAddress: string,
       contractAddr: string,
       ergsLimit: BigNumberish,
-      amount: BigNumberish,
+      tribeName: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

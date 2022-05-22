@@ -7,18 +7,18 @@ import "@matterlabs/zksync-contracts/contracts/interfaces/IZkSync.sol";
 import "@matterlabs/zksync-contracts/contracts/libraries/Operations.sol";
 
 contract SuccessGenerator {
-    event KPIOptionMint(string);
+    event TribeCreated(string);
 
     function callZkSync(
         address zkSyncAddress,
         address contractAddr,
         uint64 ergsLimit,
-        uint256 amount
+        string memory tribeName
     ) external payable {
         // require(msg.sender == governor, "Only governor is allowed");
-        bytes memory data = abi.encodeWithSignature("mintTo(address)",msg.sender); 
+        bytes memory data = abi.encodeWithSignature("createTribe(string)",tribeName); 
         IZkSync zksync = IZkSync(zkSyncAddress);
-        emit KPIOptionMint("KPI Option Minted");
+        emit TribeCreated("Tribe Created!");
         zksync.requestExecute{value: msg.value}(contractAddr, data, ergsLimit, Operations.QueueType.Deque, Operations.OpTree.Full);
     }
 }

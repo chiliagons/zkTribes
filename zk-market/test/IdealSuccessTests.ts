@@ -12,15 +12,25 @@ import {
   it 
 } from "mocha";
 
-describe("Success Token", function () {
+describe("Tribe Token", function () {
   it("Should be able to mint a new token", async function () {
     const [owner] = await ethers.getSigners();
 
-    const SNFT = await ethers.getContractFactory("SuccessNFT");
+    const SNFT = await ethers.getContractFactory("ZKTribes");
 
-    const sNFT = await SNFT.deploy("umaSuccess", "muah");
+    const sNFT = await SNFT.deploy();
 
-    // const ownerBalance = await sNFT.mintTo(owner.address, "0x00");
+    // const molochTribe = await sNFT.createTribe("Moloch");
+    // molochTribe.wait();
+    // let balanceOfContract = await sNFT.balanceOf(sNFT.address, 0);
+    // console.log(balanceOfContract);
+
+    // const tribeMember = await sNFT.joinTheTribe("Moloch");
+    // tribeMember.wait();
+    // let balanceOfOwner = await sNFT.balanceOf(owner.address, 0);
+    // console.log(balanceOfOwner);
+
+
     // expect(await sNFT.totalSupply()).to.equal(ownerBalance);
   });
 });

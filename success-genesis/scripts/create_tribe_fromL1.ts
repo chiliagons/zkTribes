@@ -2,9 +2,9 @@ import { BigNumber, Contract, ethers, Wallet } from 'ethers';
 import { Provider, utils } from 'zksync-web3';
 
 const SUCCESSGENERARATOR_ABI = require('./successgenerator.json');
-const SUCCESSGENERARATOR_ADDRESS = '0x4504E7d55B5AE7770b6157aE7f3bFE561e0514f7';
+const SUCCESSGENERARATOR_ADDRESS = '0xCe7CD196D4ef5c774E83C905448a6734B2e97A46';
 const SUCCESSNFT_ABI = require('./successnft.json');
-const SUCCESSNFT_ADDRESS = '0x4504E7d55B5AE7770b6157aE7f3bFE561e0514f7';
+const SUCCESSNFT_ADDRESS = '0x313cA394dCf517711e001bc5cFEC036348B9512F';
 
 async function main() {
     // Ethereum L1 provider
@@ -31,7 +31,7 @@ async function main() {
 
     // Encoding the tx data the same way it is done on Ethereum.
     const successNFTInterface = new ethers.utils.Interface(SUCCESSNFT_ABI);
-    const data = successNFTInterface.encodeFunctionData("mintTo", [SUCCESSNFT_ADDRESS]);
+    const data = successNFTInterface.encodeFunctionData("createTribe", ["SUCCESSNFT_ADDRESS"]);
 
     // The price of the L1 transaction requests depends on the gas price used in the call
     const gasPrice = await l1Provider.getGasPrice();
@@ -53,7 +53,7 @@ async function main() {
         SUCCESSNFT_ADDRESS, 
         // data,
         ergsLimit,
-        100,
+        "Link Marines",
         {
             // Passing the necessary ETH `value` to cover the fee for the operation
             value: baseCost,

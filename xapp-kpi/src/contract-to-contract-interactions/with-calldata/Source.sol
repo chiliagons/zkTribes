@@ -34,17 +34,18 @@ contract Source {
 
     bytes4 selector;
     bool forceSlow;
+    bytes memory callData;
 
     // Encode function of the target contract (from Target.sol)
     if (permissioned) {
       selector = bytes4(keccak256("callZkSync(address,address,uint64,uint256)"));
       forceSlow = true;
+      callData = abi.encodeWithSelector(selector, zkSyncAddress, contractAddr, ergsLimit, amount);
     } else {
       selector = bytes4(keccak256("updateValueUnpermissioned(uint256)"));
       forceSlow = false;
+      callData = abi.encodeWithSelector(selector, 1);
     }
-
-    bytes memory callData = abi.encodeWithSelector(selector, zkSyncAddress, contractAddr, ergsLimit, amount);
 
     IConnextHandler.CallParams memory callParams = IConnextHandler.CallParams({
       to: to,

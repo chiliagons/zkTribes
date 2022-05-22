@@ -60,23 +60,17 @@ contract Target {
     emit UpdateCompleted(msg.sender, newValue, false); 
   }
 
-  // // Permissioned function
-  // function updateValuePermissioned(uint256 newValue) external onlyExecutor {
-  //   value = newValue;
-
-  // }
-
   function callZkSync(
         address zkSyncAddress,
         address contractAddr,
         uint64 ergsLimit,
         uint256 amount
-    ) external payable onlyExecutor{
+    ) external onlyExecutor{
         // require(msg.sender == governor, "Only governor is allowed");
-        bytes memory data = abi.encodeWithSignature("mintTo(address)",msg.sender); 
-        IZkSync zksync = IZkSync(zkSyncAddress);
-        emit UpdateCompleted(msg.sender, 1, true); 
+        // bytes memory data = abi.encodeWithSignature("mintTo(address)",msg.sender); 
+        // IZkSync zksync = IZkSync(zkSyncAddress);
+        emit UpdateCompleted(msg.sender, amount, true); 
 
-        zksync.requestExecute{value: msg.value}(contractAddr, data, ergsLimit, Operations.QueueType.Deque, Operations.OpTree.Full);
+        // zksync.requestExecute{value: msg.value}(contractAddr, data, ergsLimit, Operations.QueueType.Deque, Operations.OpTree.Full);
     }
 }

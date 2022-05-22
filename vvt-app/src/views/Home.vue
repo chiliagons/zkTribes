@@ -5,7 +5,7 @@
    <div v-if="!mainLoading">
     <h1>🏰🏰🏰 Your Tribes -  {{greeting}} 🏰🏰🏰</h1>
     <div class="main-box">
-      <div>
+      <!-- <div>
         Select token for payment: <select v-model="selectedTokenAddress" v-on:change="changeToken">
           <option v-for="token in tokens" v-bind:value="token.address" v-bind:key="token.address" >
             {{ token.symbol }}
@@ -20,6 +20,7 @@
         <button class="refresh-button" v-on:click="updateFee">Refresh</button>
         </p>
       </div>
+      -->
     </div>
     </div>
     <div v-else>
@@ -29,11 +30,11 @@ items-center justify-center rounded-md border border-transparent bg-indigo-600 p
   </div>
   </div>
   <div class="flex flex-row" >
-  <div class="basis-1/2"></div>
-  <div class="basis-3/4">
-      <div class="content-center w-full max-w-md px-2 py-16 sm:px-0">
+  <div class="basis-1/4"></div>
+  <div class="basis-2/4">
+      <div class="content-center w-full max-w-[50] px-2 py-16 sm:px-0">
       <TabGroup>
-        <TabList class="flex space-x-1 rounded-xl bg-blue-900/80 p-1">
+        <TabList class="flex space-x-1 rounded-xl bg-[#879ED1]/90 p-1">
           <Tab
             v-for="category in Object.keys(categories)"
             as="template"
@@ -95,7 +96,7 @@ items-center justify-center rounded-md border border-transparent bg-indigo-600 p
                   :disabled="!selectedToken || txStatus!=0 || retreivingFee" v-on:click="mintTo"
                 >
                 <span v-if="selectedToken && !txStatus">Mint & Join Tribe</span>
-                                            <span v-else-if="!selectedToken">Select token to pay fee first</span>
+                                            <!--<span v-else-if="!selectedToken">Select token to pay fee first</span>-->
                                             <span v-else-if="txStatus == 1">Sending tx...</span>
                                             <span v-else-if="txStatus == 2">Waiting until tx is committed...</span>
                                             <span v-else-if="txStatus == 3">Updating the page...</span>
@@ -133,6 +134,13 @@ const categories = ref({
       date: '2h ago',
       commentCount: 3,
       shareCount: 1300,
+    },
+    {
+      id: 3,
+      title: "Moloch DAO",
+      date: '1h ago',
+      commentCount: 0,
+      shareCount: 1200,
     },
   ],
   "Popular Quests": [
@@ -174,7 +182,7 @@ import { Contract, Web3Provider, Provider } from "zksync-web3";
 import { ethers } from "ethers";
 
 // eslint-disable-next-line
-const GREETER_CONTRACT_ADDRESS = '0x4504E7d55B5AE7770b6157aE7f3bFE561e0514f7'; // TODO: Add smart contract address
+const GREETER_CONTRACT_ADDRESS = '0x313cA394dCf517711e001bc5cFEC036348B9512F'; // TODO: Add smart contract address
 // eslint-disable-next-line
 const GREETER_CONTRACT_ABI = 
 [
@@ -189,32 +197,7 @@ const GREETER_CONTRACT_ABI =
         {
           "indexed": true,
           "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "approved",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "Approval",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "owner",
+          "name": "account",
           "type": "address"
         },
         {
@@ -237,24 +220,30 @@ const GREETER_CONTRACT_ABI =
       "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
         },
         {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "price",
-          "type": "uint256"
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
         }
       ],
-      "name": "MarketOrder",
+      "name": "OwnershipTransferred",
       "type": "event"
     },
     {
       "anonymous": false,
       "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
         {
           "indexed": true,
           "internalType": "address",
@@ -268,39 +257,139 @@ const GREETER_CONTRACT_ABI =
           "type": "address"
         },
         {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "values",
+          "type": "uint256[]"
         }
       ],
-      "name": "Transfer",
+      "name": "TransferBatch",
       "type": "event"
     },
     {
+      "anonymous": false,
       "inputs": [
         {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
           "internalType": "address",
           "name": "to",
           "type": "address"
         },
         {
+          "indexed": false,
           "internalType": "uint256",
-          "name": "tokenId",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
           "type": "uint256"
         }
       ],
-      "name": "approve",
-      "outputs": [],
-      "stateMutability": "nonpayable",
+      "name": "TransferSingle",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "tribeName",
+          "type": "string"
+        }
+      ],
+      "name": "TribeCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "tribeMember",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "tribeName",
+          "type": "string"
+        }
+      ],
+      "name": "TribeJoined",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "value",
+          "type": "string"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "URI",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "balanceInNative",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [
         {
           "internalType": "address",
-          "name": "owner",
+          "name": "account",
           "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
         }
       ],
       "name": "balanceOf",
@@ -312,6 +401,43 @@ const GREETER_CONTRACT_ABI =
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "accounts",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "balanceOfBatch",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "tribeName",
+          "type": "string"
+        }
+      ],
+      "name": "createTribe",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -330,27 +456,8 @@ const GREETER_CONTRACT_ABI =
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getApproved",
-      "outputs": [
-        {
           "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "owner",
+          "name": "account",
           "type": "address"
         },
         {
@@ -373,44 +480,19 @@ const GREETER_CONTRACT_ABI =
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
+          "internalType": "string",
+          "name": "tribeName",
+          "type": "string"
         }
       ],
-      "name": "mintTo",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
+      "name": "joinTheTribe",
+      "outputs": [],
+      "stateMutability": "payable",
       "type": "function"
     },
     {
       "inputs": [],
-      "name": "name",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "ownerOf",
+      "name": "owner",
       "outputs": [
         {
           "internalType": "address",
@@ -422,22 +504,10 @@ const GREETER_CONTRACT_ABI =
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "itemId",
-          "type": "uint256"
-        }
-      ],
-      "name": "purchaseHigher",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "success",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "payable",
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -453,12 +523,22 @@ const GREETER_CONTRACT_ABI =
           "type": "address"
         },
         {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "amounts",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
         }
       ],
-      "name": "safeTransferFrom",
+      "name": "safeBatchTransferFrom",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -477,12 +557,17 @@ const GREETER_CONTRACT_ABI =
         },
         {
           "internalType": "uint256",
-          "name": "tokenId",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
           "type": "uint256"
         },
         {
           "internalType": "bytes",
-          "name": "_data",
+          "name": "data",
           "type": "bytes"
         }
       ],
@@ -512,25 +597,6 @@ const GREETER_CONTRACT_ABI =
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "successHashOfToken",
-      "outputs": [
-        {
-          "internalType": "bytes32",
-          "name": "",
-          "type": "bytes32"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "bytes4",
           "name": "interfaceId",
           "type": "bytes4"
@@ -548,81 +614,64 @@ const GREETER_CONTRACT_ABI =
       "type": "function"
     },
     {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "name": "tribes",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "uri",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [],
-      "name": "symbol",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "tokenPrice",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "name": "tokenURI",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "transferFrom",
+      "name": "withdraw",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     }
-  ];
-
+  ]
 const allowedTokens = 
 [
     {
@@ -673,7 +722,7 @@ export default {
     // Note that we still need to get the Metamask signer
     signer = (new Web3Provider(window.ethereum)).getSigner();
 
-
+    console.log(GREETER_CONTRACT_ADDRESS, GREETER_CONTRACT_ABI)
     myContract = new Contract(
         GREETER_CONTRACT_ADDRESS,
         GREETER_CONTRACT_ABI,
@@ -681,11 +730,14 @@ export default {
     );  
     },
     async getGreeting() {
-      return await myContract.balanceOf(signer.getAddress());
+      return await myContract.balanceOf(signer.getAddress(),1);
     },
     async getFee() {
       // Getting the amount of gas (ergs) needed for one transaction
-      const feeInGas = await myContract.estimateGas.mintTo(signer.getAddress());
+      const feeInGas = await myContract.estimateGas.joinTheTribe("Moloch",
+          {
+      value:ethers.utils.parseEther("0.000001")
+      });
       // Getting the gas price per one erg. For now, it is the same for all tokens.
       const gasPriceInUnits = await syncProvider.getGasPrice();
 
@@ -704,12 +756,9 @@ export default {
       console.log("Lets mint");
       this.txStatus = 1;
       try {
-        const txHandle = await myContract.mintTo(signer.getAddress(), {
-            customData: {
-                // Passing the token to pay fee with
-                feeToken: this.selectedToken.address
-            }
-        });
+        const txHandle = await myContract.joinTheTribe("Moloch");
+      console.log("Lets txHandle");
+
         // TODO: Submit the transaction
         this.txStatus = 2;
 
